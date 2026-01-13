@@ -8,6 +8,10 @@
   "author": {
     "name": "kaifeishen"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JiJiFlyer/CurrencyExchangeRates.git"
+  },
   "engines": {
     "vscode": "^1.75.0"
   },

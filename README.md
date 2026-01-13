@@ -42,7 +42,7 @@
 1. 点击侧边栏Extension按钮
 2. 在搜索栏（Search Extensions in Marketplace）搜索`Currency Exchange Rates`
 3. 找到本插件安装
-![alt text](image.png)
+![alt text](resources/marketplace-screenshot.png)
 
 #### 方法二：从 VSIX 文件安装（推荐）
 
