@@ -6,9 +6,10 @@
 
 - 🎯 **侧边栏视图**：在主侧边栏添加专属货币汇率面板，一键访问
 - 📊 **实时汇率显示**：在状态栏实时显示指定货币对的汇率
+- ⬆️ **历史汇率显示**：点击具体货币查看其历史汇率
 - 💰 **汇率计算器**：支持多种货币之间的快速转换计算
+- 🌐 **双语切换**：支持English/简体中文切换
 - 🔄 **自动刷新**：可配置的自动刷新间隔
-- 📈 **涨跌指示**：显示汇率变化趋势（上涨/下跌）
 - 🌍 **支持主要货币**：包括美元、欧元、英镑、日元、人民币等18种主要货币
 - ⚙️ **灵活配置**：可自定义状态栏显示的货币对和刷新频率
 - 🎨 **美观界面**：现代化的卡片式设计，支持VS Code主题
@@ -37,36 +38,40 @@
 ## 🚀 快速开始
 
 ### 安装方法
+#### 方法一：从VS Code插件（MarketPlace）直接安装
+1. 点击侧边栏Extension按钮
+2. 在搜索栏（Search Extensions in Marketplace）搜索`Currency Exchange Rates`
+3. 找到本插件安装
+![alt text](image.png)
 
-#### 方法一：从 VSIX 文件安装（推荐）
+#### 方法二：从 VSIX 文件安装（推荐）
 
-1. 下载 `currency-exchange-rates-1.0.0.vsix` 文件
+1. 下载 `currency-exchange-rates-2.0.0.vsix` 文件
 2. 打开 VS Code
 3. 按 `Ctrl+Shift+P` (Windows/Linux) 或 `Cmd+Shift+P` (Mac) 打开命令面板
 4. 输入 `Extensions: Install from VSIX...`
 5. 选择下载的 `.vsix` 文件
 6. 重启 VS Code
 
-#### 方法二：使用命令行安装
+#### 方法三：使用命令行安装
 
 ```bash
-code --install-extension currency-exchange-rates-1.0.0.vsix
+code --install-extension currency-exchange-rates-2.0.0.vsix
 ```
 
 ### 使用方法
 
-#### 1. 使用侧边栏视图（新功能！）
+#### 1. 使用侧边栏视图
 
 安装后，在 VS Code 左侧活动栏会出现一个 💱 货币图标：
 
 - **点击图标**：打开货币汇率侧边栏
 - **查看主要汇率**：以卡片形式展示8种主要货币的实时汇率
-- **快速设置**：点击任意货币卡片，即可将其设置到状态栏显示
+- **历史汇率**：点击任意货币卡片，即可查看历史汇率
 - **配置选项**：在侧边栏底部可以：
   - 选择状态栏显示的货币对
   - 调整刷新间隔
-  - 开关涨跌指示
-  - 打开汇率计算器
+  - 使用汇率计算器
 
 #### 2. 查看状态栏汇率
 
@@ -74,69 +79,24 @@ code --install-extension currency-exchange-rates-1.0.0.vsix
 
 #### 3. 查看实时汇率
 
-- 点击状态栏的汇率信息，或
-- 按 `Ctrl+Shift+P` 打开命令面板，输入 `查看实时汇率`
+- 点击状态栏的汇率信息
+- 侧边栏点击“查看详细汇率”
 
 将打开一个面板，显示所有支持货币的实时汇率。
 
-#### 4. 使用汇率计算器
+#### 4. 查看历史汇率
 
-- 在侧边栏点击"打开汇率计算器"按钮，或
-- 按 `Ctrl+Shift+P` 打开命令面板，输入 `汇率计算器`
-- 在打开的面板中输入金额，选择源货币和目标货币
-- 点击"转换"按钮即可获得结果
+- 在侧边栏实时汇率中点击具体货币卡片可查看历史汇率
+- 在详细实时汇率界面中点击具体货币行可查看历史汇率
 
 #### 5. 刷新汇率数据
 
 - 在侧边栏点击"🔄 刷新"按钮，或
 - 按 `Ctrl+Shift+P` 打开命令面板，输入 `刷新汇率数据`
 
-## ⚙️ 配置选项
+#### 6. 语言切换
+- 侧边栏点击🌐可进行中英文切换
 
-打开 VS Code 设置（`Ctrl+,`），搜索 `Currency Exchange`，可以配置以下选项：
-
-### `currencyExchange.statusBarCurrency`
-
-设置状态栏显示的货币对。
-
-- 类型：`string`
-- 默认值：`USD/CNY`
-- 可选值：
-  - `USD/CNY` - 美元/人民币
-  - `EUR/CNY` - 欧元/人民币
-  - `GBP/CNY` - 英镑/人民币
-  - `JPY/CNY` - 日元/人民币
-  - `HKD/CNY` - 港币/人民币
-  - `EUR/USD` - 欧元/美元
-  - `GBP/USD` - 英镑/美元
-  - 等等...
-
-### `currencyExchange.refreshInterval`
-
-设置汇率数据的自动刷新间隔（秒）。
-
-- 类型：`number`
-- 默认值：`300`（5分钟）
-- 范围：`60` - `3600`
-
-### `currencyExchange.showChangeIndicator`
-
-是否在状态栏显示汇率涨跌指示。
-
-- 类型：`boolean`
-- 默认值：`true`
-
-### 配置示例
-
-在 `settings.json` 中添加：
-
-```json
-{
-  "currencyExchange.statusBarCurrency": "EUR/USD",
-  "currencyExchange.refreshInterval": 600,
-  "currencyExchange.showChangeIndicator": true
-}
-```
 
 ## 📝 命令列表
 
@@ -168,7 +128,7 @@ npm run compile
 npm run package
 ```
 
-打包完成后，会在项目根目录生成 `currency-exchange-rates-1.0.0.vsix` 文件。
+打包完成后，会在项目根目录生成 `currency-exchange-rates-2.0.0.vsix` 文件。
 
 ## 📊 数据来源
 
