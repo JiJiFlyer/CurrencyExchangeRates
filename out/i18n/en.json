@@ -1,0 +1,93 @@
+{
+  "extension": {
+    "name": "Currency Exchange Rates",
+    "activated": "Currency Exchange Rates extension activated!",
+    "deactivated": "Currency Exchange Rates extension deactivated",
+    "welcomeMessage": "💱 Currency Exchange Rates extension started! Click the status bar to view rates.",
+    "viewRates": "View Rates",
+    "openCalculator": "Open Calculator"
+  },
+  "commands": {
+    "showRates": "View Real-time Exchange Rates",
+    "calculate": "Currency Calculator",
+    "refresh": "Refresh Exchange Rate Data",
+    "changeLanguage": "Change Language"
+  },
+  "statusBar": {
+    "fetchFailed": "Rate fetch failed",
+    "tooltip": "Click to view more rates"
+  },
+  "sidebar": {
+    "title": "Exchange Rate Monitor",
+    "loading": "Loading exchange rate data...",
+    "error": "Failed to load data",
+    "retry": "Retry",
+    "baseCurrency": "Base Currency",
+    "targetCurrency": "Target Currency",
+    "rate": "Rate",
+    "viewDetails": "View Detailed Rates",
+    "lastUpdate": "Last Update",
+    "dataSource": "Data Source",
+    "refreshInterval": "Refresh Interval",
+    "seconds": "seconds",
+    "statusBarTip": "Tip: The status bar will always display the exchange rate information for the selected currency pair"
+  },
+  "ratesView": {
+    "title": "Real-time Exchange Rates",
+    "baseCurrency": "Base Currency",
+    "search": "Search currency...",
+    "currency": "Currency",
+    "rate": "Rate",
+    "change": "Change",
+    "lastUpdate": "Last Update",
+    "dataSource": "Data Source",
+    "refresh": "Refresh",
+    "close": "Close"
+  },
+  "calculator": {
+    "title": "Currency Calculator",
+    "amount": "Amount",
+    "from": "From",
+    "to": "To",
+    "convert": "Convert",
+    "calculate": "Calculate",
+    "result": "Result",
+    "close": "Close",
+    "enterAmount": "Please enter amount",
+    "selectCurrency": "Please select currency"
+  },
+  "currencies": {
+    "USD": "US Dollar",
+    "EUR": "Euro",
+    "GBP": "British Pound",
+    "JPY": "Japanese Yen",
+    "CNY": "Chinese Yuan",
+    "HKD": "Hong Kong Dollar",
+    "KRW": "South Korean Won",
+    "AUD": "Australian Dollar",
+    "CAD": "Canadian Dollar",
+    "SGD": "Singapore Dollar",
+    "CHF": "Swiss Franc",
+    "NZD": "New Zealand Dollar",
+    "THB": "Thai Baht",
+    "MYR": "Malaysian Ringgit",
+    "RUB": "Russian Ruble",
+    "INR": "Indian Rupee",
+    "BRL": "Brazilian Real",
+    "ZAR": "South African Rand"
+  },
+  "messages": {
+    "refreshSuccess": "Exchange rate data refreshed",
+    "refreshFailed": "Failed to refresh data",
+    "networkError": "Network connection error, please check your network",
+    "dataUnavailable": "Unable to fetch exchange rate data:\n• All data sources are unavailable\n• Possible reasons: network connection issues, firewall blocking, or proxy settings\n• Suggestion: check network settings or try again later",
+    "languageChanged": "Language changed to English"
+  },
+  "config": {
+    "baseCurrency": "Default base currency",
+    "statusBarCurrency": "Currency pair displayed in status bar (format: USD/CNY)",
+    "refreshInterval": "Exchange rate data refresh interval (seconds)",
+    "showChangeIndicator": "Show rate change indicator in status bar",
+    "language": "Display language"
+  }
+}

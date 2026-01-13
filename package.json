@@ -1,0 +1,149 @@
+{
+  "name": "currency-exchange-rates",
+  "displayName": "Currency Exchange Rates",
+  "description": "实时查看货币汇率并进行汇率计算",
+  "version": "2.0.0",
+  "publisher": "kaifeishen",
+  "icon": "resources/icon.png",
+  "author": {
+    "name": "kaifeishen"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "currencyExchange",
+          "title": "货币汇率",
+          "icon": "resources/currency-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "currencyExchange": [
+        {
+          "type": "webview",
+          "id": "currencyExchange.sidebarView",
+          "name": "汇率监控"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "currencyExchange.showRates",
+        "title": "View Real-time Exchange Rates / 查看实时汇率"
+      },
+      {
+        "command": "currencyExchange.calculate",
+        "title": "Currency Calculator / 汇率计算器"
+      },
+      {
+        "command": "currencyExchange.refresh",
+        "title": "Refresh Exchange Rate Data / 刷新汇率数据"
+      },
+      {
+        "command": "currencyExchange.changeLanguage",
+        "title": "Change Language / 切换语言"
+      }
+    ],
+    "configuration": {
+      "title": "Currency Exchange Rates",
+      "properties": {
+        "currencyExchange.baseCurrency": {
+          "type": "string",
+          "default": "USD",
+          "description": "默认基准货币",
+          "enum": [
+            "USD",
+            "EUR",
+            "GBP",
+            "JPY",
+            "CNY",
+            "HKD",
+            "KRW",
+            "AUD",
+            "CAD",
+            "SGD",
+            "CHF",
+            "NZD",
+            "THB",
+            "MYR",
+            "RUB",
+            "INR",
+            "BRL",
+            "ZAR"
+          ]
+        },
+        "currencyExchange.statusBarCurrency": {
+          "type": "string",
+          "default": "USD/CNY",
+          "description": "状态栏显示的汇率对（格式：USD/CNY）",
+          "enum": [
+            "USD/CNY",
+            "EUR/CNY",
+            "GBP/CNY",
+            "JPY/CNY",
+            "HKD/CNY",
+            "KRW/CNY",
+            "AUD/CNY",
+            "CAD/CNY",
+            "SGD/CNY",
+            "EUR/USD",
+            "GBP/USD",
+            "USD/JPY"
+          ]
+        },
+        "currencyExchange.refreshInterval": {
+          "type": "number",
+          "default": 300,
+          "description": "汇率数据刷新间隔（秒）",
+          "minimum": 60,
+          "maximum": 3600
+        },
+        "currencyExchange.showChangeIndicator": {
+          "type": "boolean",
+          "default": true,
+          "description": "在状态栏显示汇率涨跌指示"
+        },
+        "currencyExchange.language": {
+          "type": "string",
+          "default": "en",
+          "description": "Display language / 显示语言",
+          "enum": [
+            "en",
+            "zh-CN"
+          ],
+          "enumDescriptions": [
+            "English",
+            "简体中文"
+          ]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./ && node copy-i18n.js",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.0.0",
+    "@vscode/vsce": "^2.19.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

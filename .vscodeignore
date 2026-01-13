@@ -1,0 +1,23 @@
+.vscode/**
+.vscode-test/**
+src/**
+.gitignore
+.yarnrc
+vsc-extension-quickstart.md
+**/tsconfig.json
+**/.eslintrc.json
+**/*.map
+**/*.ts
+*.vsix
+.DS_Store
+
+# 只排除开发依赖，保留运行时依赖
+node_modules/@types/**
+node_modules/@vscode/**
+node_modules/typescript/**
+
+# 保留 axios（运行时依赖）
+!node_modules/axios/**
+!node_modules/follow-redirects/**
+!node_modules/form-data/**
+!node_modules/proxy-from-env/**
