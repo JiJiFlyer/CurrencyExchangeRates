@@ -2,7 +2,7 @@
   "name": "currency-exchange-rates",
   "displayName": "Currency Exchange Rates",
   "description": "实时查看货币汇率并进行汇率计算",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "publisher": "kaifeishen",
   "icon": "resources/icon.png",
   "author": {

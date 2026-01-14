@@ -81,7 +81,32 @@
     "refreshFailed": "刷新数据失败",
     "networkError": "网络连接错误，请检查网络",
     "dataUnavailable": "无法获取汇率数据：\n• 所有数据源均不可用\n• 可能的原因：网络连接问题、防火墙阻止、或代理设置\n• 建议：检查网络设置或稍后重试",
-    "languageChanged": "语言已切换为中文"
+    "languageChanged": "语言已切换为中文",
+    "loading": "加载中...",
+    "loadFailed": "加载失败"
+  },
+  "history": {
+    "title": "历史汇率",
+    "loading": "正在加载历史汇率数据...",
+    "refreshing": "正在刷新历史汇率数据...",
+    "loadFailed": "获取历史汇率失败",
+    "refreshFailed": "刷新失败",
+    "dataSource": "数据来源",
+    "timeRange": "时间范围",
+    "last7Days": "最近7天",
+    "last30Days": "最近30天",
+    "last90Days": "最近90天",
+    "last180Days": "最近180天",
+    "last1Year": "最近1年",
+    "swap": "对换",
+    "refresh": "刷新",
+    "currentRate": "当前汇率",
+    "highestRate": "最高汇率",
+    "lowestRate": "最低汇率",
+    "averageRate": "平均汇率",
+    "trendChart": "汇率走势图",
+    "date": "日期",
+    "rate": "汇率"
   },
   "config": {
     "baseCurrency": "默认基准货币",

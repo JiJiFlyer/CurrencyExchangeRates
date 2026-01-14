@@ -138,6 +138,18 @@ export function activate(context: vscode.ExtensionContext) {
                 if (sidebarProvider) {
                     await sidebarProvider.updateView();
                 }
+                
+                // 刷新实时汇率面板（如果已打开）
+                if (ratesViewPanel) {
+                    await ratesViewPanel.refreshCurrentPanel();
+                    // 刷新历史汇率面板（如果已打开）
+                    await ratesViewPanel.refreshHistoryPanel();
+                }
+                
+                // 刷新计算器面板（如果已打开）
+                if (calculatorPanel) {
+                    await calculatorPanel.refreshCurrentPanel();
+                }
             }
         }
     );

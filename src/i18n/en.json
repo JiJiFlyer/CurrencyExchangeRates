@@ -81,7 +81,32 @@
     "refreshFailed": "Failed to refresh data",
     "networkError": "Network connection error, please check your network",
     "dataUnavailable": "Unable to fetch exchange rate data:\n• All data sources are unavailable\n• Possible reasons: network connection issues, firewall blocking, or proxy settings\n• Suggestion: check network settings or try again later",
-    "languageChanged": "Language changed to English"
+    "languageChanged": "Language changed to English",
+    "loading": "Loading...",
+    "loadFailed": "Load failed"
+  },
+  "history": {
+    "title": "Historical Rates",
+    "loading": "Loading historical rate data...",
+    "refreshing": "Refreshing historical rate data...",
+    "loadFailed": "Failed to fetch historical rates",
+    "refreshFailed": "Refresh failed",
+    "dataSource": "Data Source",
+    "timeRange": "Time Range",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days",
+    "last180Days": "Last 180 Days",
+    "last1Year": "Last 1 Year",
+    "swap": "Swap",
+    "refresh": "Refresh",
+    "currentRate": "Current Rate",
+    "highestRate": "Highest Rate",
+    "lowestRate": "Lowest Rate",
+    "averageRate": "Average Rate",
+    "trendChart": "Trend Chart",
+    "date": "Date",
+    "rate": "Rate"
   },
   "config": {
     "baseCurrency": "Default base currency",

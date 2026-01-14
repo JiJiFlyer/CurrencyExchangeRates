@@ -4,8 +4,11 @@ import { I18nService } from './i18nService';
 
 export class RatesViewPanel {
     private panel: vscode.WebviewPanel | undefined;
+    private historyPanel: vscode.WebviewPanel | undefined;
+    private historyPanelData: { from: string; to: string; days: number } | undefined;
     private service: ExchangeRateService;
     private i18n?: I18nService;
+    private currentBaseCurrency: string = 'USD';
 
     constructor(service: ExchangeRateService) {
         this.service = service;
@@ -80,6 +83,8 @@ export class RatesViewPanel {
             return;
         }
 
+        this.currentBaseCurrency = baseCurrency;
+
         try {
             const rates = await this.service.fetchExchangeRates(baseCurrency);
             const dataSource = this.service.getCurrentDataSource();
@@ -87,6 +92,33 @@ export class RatesViewPanel {
         } catch (error) {
             const errorMsg = this.i18n ? this.i18n.t('messages.refreshFailed') : '获取汇率数据失败';
             vscode.window.showErrorMessage(errorMsg + ': ' + (error instanceof Error ? error.message : '未知错误'));
+        }
+    }
+
+    /**
+     * 刷新当前面板（用于语言切换后刷新）
+     */
+    public async refreshCurrentPanel(): Promise<void> {
+        if (this.panel) {
+            await this.updateRatesView(this.currentBaseCurrency);
+        }
+    }
+
+    /**
+     * 刷新历史汇率面板（用于语言切换后刷新）
+     */
+    public async refreshHistoryPanel(): Promise<void> {
+        if (this.historyPanel && this.historyPanelData) {
+            const { from, to, days } = this.historyPanelData;
+            try {
+                const historyData = await this.service.getHistoricalRates(from, to, days);
+                this.historyPanel.webview.html = this.getHistoryHtml(historyData);
+                this.historyPanel.title = `${from}/${to} ${this.t('history.title')}`;
+            } catch (error) {
+                this.historyPanel.webview.html = this.getErrorHtml(
+                    error instanceof Error ? error.message : this.t('history.loadFailed')
+                );
+            }
         }
     }
 
@@ -326,18 +358,34 @@ export class RatesViewPanel {
     async showHistoryPanel(currencyPair: string): Promise<void> {
         let [from, to] = currencyPair.split('/');
         
+        // 如果已有历史面板，先关闭
+        if (this.historyPanel) {
+            this.historyPanel.dispose();
+        }
+        
+        const title = `${currencyPair} ${this.t('history.title')}`;
         const panel = vscode.window.createWebviewPanel(
             'currencyHistory',
-            `${currencyPair} 历史汇率`,
+            title,
             vscode.ViewColumn.One,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true
             }
         );
+        
+        // 保存面板引用和数据
+        this.historyPanel = panel;
+        this.historyPanelData = { from, to, days: 30 };
 
+        // 监听面板关闭事件
+        panel.onDidDispose(() => {
+            this.historyPanel = undefined;
+            this.historyPanelData = undefined;
+        });
+        
         // 显示加载状态
-        panel.webview.html = this.getLoadingHtml('正在加载历史汇率数据...');
+        panel.webview.html = this.getLoadingHtml(this.t('history.loading'));
 
         try {
             // 获取历史汇率数据（最近30天）
@@ -345,36 +393,37 @@ export class RatesViewPanel {
             panel.webview.html = this.getHistoryHtml(historyData);
         } catch (error) {
             panel.webview.html = this.getErrorHtml(
-                error instanceof Error ? error.message : '获取历史汇率失败'
+                error instanceof Error ? error.message : this.t('history.loadFailed')
             );
         }
 
         // 处理来自webview的消息
         panel.webview.onDidReceiveMessage(async (message) => {
             if (message.command === 'refresh') {
-                panel.webview.html = this.getLoadingHtml('正在刷新历史汇率数据...');
+                panel.webview.html = this.getLoadingHtml(this.t('history.refreshing'));
                 try {
                     const historyData = await this.service.getHistoricalRates(from, to, 30);
                     panel.webview.html = this.getHistoryHtml(historyData);
                 } catch (error) {
                     panel.webview.html = this.getErrorHtml(
-                        error instanceof Error ? error.message : '刷新失败'
+                        error instanceof Error ? error.message : this.t('history.refreshFailed')
                     );
                 }
             } else if (message.command === 'changeDays') {
-                panel.webview.html = this.getLoadingHtml('正在加载历史汇率数据...');
+                panel.webview.html = this.getLoadingHtml(this.t('history.loading'));
                 try {
                     const days = parseInt(message.days) || 30;
+                    this.historyPanelData = { from, to, days }; // 更新保存的天数
                     const historyData = await this.service.getHistoricalRates(from, to, days);
                     panel.webview.html = this.getHistoryHtml(historyData);
                 } catch (error) {
                     panel.webview.html = this.getErrorHtml(
-                        error instanceof Error ? error.message : '加载失败'
+                        error instanceof Error ? error.message : this.t('history.loadFailed')
                     );
                 }
             } else if (message.command === 'swap') {
                 // 对换货币对
-                panel.webview.html = this.getLoadingHtml('正在加载历史汇率数据...');
+                panel.webview.html = this.getLoadingHtml(this.t('history.loading'));
                 try {
                     // 交换from和to
                     const temp = from;
@@ -382,16 +431,16 @@ export class RatesViewPanel {
                     to = temp;
                     
                     const days = parseInt(message.days) || 30;
+                    this.historyPanelData = { from, to, days }; // 更新保存的货币对
                     const historyData = await this.service.getHistoricalRates(from, to, days);
-                    panel.title = `${from}/${to} 历史汇率`;
+                    panel.title = `${from}/${to} ${this.t('history.title')}`;
                     panel.webview.html = this.getHistoryHtml(historyData);
                 } catch (error) {
                     panel.webview.html = this.getErrorHtml(
-                        error instanceof Error ? error.message : '加载失败'
+                        error instanceof Error ? error.message : this.t('history.loadFailed')
                     );
                 }
-            }
-        });
+            }        });
     }
 
     /**
@@ -433,7 +482,7 @@ export class RatesViewPanel {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${data.from}/${data.to} 历史汇率</title>
+    <title>${data.from}/${data.to} ${this.t('history.title')}</title>
     <style>
         * {
             margin: 0;
@@ -615,51 +664,51 @@ export class RatesViewPanel {
     <div class="header">
         <div class="title">
             <span>📈</span>
-            <span>${data.from}/${data.to} 历史汇率</span>
+            <span>${data.from}/${data.to} ${this.t('history.title')}</span>
         </div>
         <div class="subtitle">${fromName} → ${toName}</div>
         <div class="data-source" style="margin-top: 8px; font-size: 12px; color: var(--vscode-descriptionForeground);">
-            📡 数据来源: <strong>Frankfurter API</strong>
+            📡 ${this.t('history.dataSource')}: <strong>Frankfurter API</strong>
         </div>
     </div>
 
     <div class="controls">
-        <label>时间范围:</label>
+        <label>${this.t('history.timeRange')}:</label>
         <select id="daysSelect" onchange="changeDays()">
-            <option value="7">最近7天</option>
-            <option value="30" selected>最近30天</option>
-            <option value="90">最近90天</option>
-            <option value="180">最近180天</option>
-            <option value="365">最近1年</option>
+            <option value="7">${this.t('history.last7Days')}</option>
+            <option value="30" selected>${this.t('history.last30Days')}</option>
+            <option value="90">${this.t('history.last90Days')}</option>
+            <option value="180">${this.t('history.last180Days')}</option>
+            <option value="365">${this.t('history.last1Year')}</option>
         </select>
-        <button onclick="swapCurrencies()" title="对换货币对">⇄ 对换</button>
-        <button onclick="refresh()">🔄 刷新</button>
+        <button onclick="swapCurrencies()" title="${this.t('history.swap')}">⇄ ${this.t('history.swap')}</button>
+        <button onclick="refresh()">🔄 ${this.t('history.refresh')}</button>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-label">当前汇率</div>
+            <div class="stat-label">${this.t('history.currentRate')}</div>
             <div class="stat-value">${this.service.formatRate(latestRate)}</div>
             <div class="stat-change ${change >= 0 ? 'positive' : 'negative'}">
                 ${change >= 0 ? '↑' : '↓'} ${Math.abs(changePercent).toFixed(2)}%
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">最高汇率</div>
+            <div class="stat-label">${this.t('history.highestRate')}</div>
             <div class="stat-value">${this.service.formatRate(maxRate)}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">最低汇率</div>
+            <div class="stat-label">${this.t('history.lowestRate')}</div>
             <div class="stat-value">${this.service.formatRate(minRate)}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">平均汇率</div>
+            <div class="stat-label">${this.t('history.averageRate')}</div>
             <div class="stat-value">${this.service.formatRate(avgRate)}</div>
         </div>
     </div>
 
     <div class="chart-container">
-        <div class="chart-title">汇率走势图</div>
+        <div class="chart-title">${this.t('history.trendChart')}</div>
         <canvas id="rateChart"></canvas>
     </div>
 
@@ -667,8 +716,8 @@ export class RatesViewPanel {
         <table>
             <thead>
                 <tr>
-                    <th>日期</th>
-                    <th>汇率</th>
+                    <th>${this.t('history.date')}</th>
+                    <th>${this.t('history.rate')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -689,7 +738,7 @@ export class RatesViewPanel {
             data: {
                 labels: chartData.map(d => d.date),
                 datasets: [{
-                    label: '汇率',
+                    label: '${this.t('history.rate')}',
                     data: chartData.map(d => d.rate),
                     borderColor: '#007acc',
                     backgroundColor: 'rgba(0, 122, 204, 0.1)',
@@ -748,7 +797,8 @@ export class RatesViewPanel {
     /**
      * 生成加载HTML
      */
-    private getLoadingHtml(message: string = '加载中...'): string {
+    private getLoadingHtml(message?: string): string {
+        const loadingMsg = message || this.t('messages.loading');
         return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -785,7 +835,7 @@ export class RatesViewPanel {
 </head>
 <body>
     <div class="spinner"></div>
-    <div class="message">${message}</div>
+    <div class="message">${loadingMsg}</div>
 </body>
 </html>`;
     }
@@ -828,7 +878,7 @@ export class RatesViewPanel {
 </head>
 <body>
     <div class="error-icon">⚠️</div>
-    <div class="error-title">加载失败</div>
+    <div class="error-title">${this.t('messages.loadFailed')}</div>
     <div class="error-message">${error}</div>
 </body>
 </html>`;
@@ -842,6 +892,15 @@ export class CalculatorPanel {
 
     constructor(service: ExchangeRateService) {
         this.service = service;
+    }
+
+    /**
+     * 刷新当前面板（用于语言切换后刷新）
+     */
+    public async refreshCurrentPanel(): Promise<void> {
+        if (this.panel) {
+            this.panel.webview.html = await this.getCalculatorHtml();
+        }
     }
 
     /**
